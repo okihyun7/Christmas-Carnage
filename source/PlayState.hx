@@ -2849,7 +2849,7 @@ class PlayState extends MusicBeatState
 
 						switch (diff) {
 							case 'NAUGHTY':
-								duration = 6;
+								duration = 7.5;
 								clicks = 25;
 							case 'HARD':
 								duration = 10;
