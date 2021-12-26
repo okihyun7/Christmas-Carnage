@@ -73,6 +73,8 @@ class PreloadingState extends FlxState
 
 	var backgroundGroup:FlxTypedGroup<FlxSprite>;
 
+	public static var unlockedAchv:Array<Bool> = [false,false];
+
     override public function create():Void
     {
 		funkay = new FlxSprite().loadGraphic(Paths.image('funkay'));
@@ -98,6 +100,12 @@ class PreloadingState extends FlxState
         super.create();
 
         FlxG.save.bind('funkin', 'ninjamuffin99');
+		if(FlxG.save.data != null) {
+            if (FlxG.save.data.naughty != null)
+                unlockedAchv[0] = FlxG.save.data.naughty;
+            if (FlxG.save.data.what != null)
+                unlockedAchv[1] = FlxG.save.data.what;
+        }
 		ClientPrefs.loadPrefs();
 
 		Highscore.load();

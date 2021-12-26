@@ -5,6 +5,7 @@ import Discord.DiscordClient;
 #end
 import Section.SwagSection;
 import Song.SwagSong;
+import flixel.group.FlxGroup;
 import WiggleEffect.WiggleEffectType;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
@@ -288,11 +289,13 @@ class PlayState extends MusicBeatState
 		[637, 719, 'ORANGE', 'losehealth'],
 		[719, 779, 'RED', 'die'],
 	];
+	public static var reefTweens:Array<FlxTween> = null;
 	//ANTI CHEAT
-	public static var cps:Float = 0.0;
+	public static var cps:Int = 0;
 	public static var cpsTimers = new FlxTimerManager();
 	public static var pauseSpamCounter:Int;
 	public static var pauseStunTimer:FlxTimer;
+	public static var cpscap:Int = 25;
 	//MISC
 	var ofs = 30; //controls how much the camera moves when it follows the animations
 	private static var resetSpriteCache:Bool = false;
@@ -1755,26 +1758,16 @@ class PlayState extends MusicBeatState
 	{
 		//TREE SHIT -lunar
 
-		if(FlxG.mouse.justPressed && cps < 20 && !cpuControlled){
+		if(FlxG.mouse.justPressed && cps < cpscap && !cpuControlled){
 			addCPS();
 			didMessage = false;
-		} else if (FlxG.mouse.justPressed && cps >= 20 && !didMessage && !cpuControlled) {
+		} else if (FlxG.mouse.justPressed && cps >= cpscap && !didMessage && !cpuControlled) {
 			didMessage = true;
 			addTextToDebug("Holy shit you click fast");
 		}
 
 		if (!paused && cpsTimers != null)
 		   	cpsTimers.update(elapsed);
-
-		if(Eyes != null) {
-			Eyes.forEachAlive(function(spr:EvilEye){
-				if (spr != null) {
-					if (cpuControlled && !spr.info[2]) {
-						spr.remove(false,true);
-					}
-				}
-			}); 
-        }
 
 		if (die != '') {
 			lmao(die);
@@ -2860,12 +2853,6 @@ class PlayState extends MusicBeatState
 								clicks = 25;
 							case 'HARD':
 								duration = 10;
-							case 'NORMAL':
-								duration = 15;
-							case 'EASY':
-								duration = 20;
-							case 'TODDLER':
-								duration = 25;
 							case 'default':
 								duration = 10;
 							case _:
@@ -4187,24 +4174,37 @@ class PlayState extends MusicBeatState
 		if (reefArrows != null) {
 			FlxTween.tween(reefArrows, {x: 779},howfast, { type: FlxTween.PINGPONG, ease: FlxEase.linear});
 		}
-		
-		playerStrums.forEach(function(spr:StrumNote) {
-			FlxTween.tween(spr, { alpha : 0.1 },0.2, {ease: FlxEase.circOut});
-		});
-		if (!ClientPrefs.middleScroll) {
-			opponentStrums.forEach(function(spr:StrumNote) {
-				FlxTween.tween(spr, { alpha : 0.1 },0.2, {ease: FlxEase.circOut});
+		if (reefTweens == null) {
+			reefTweens = [];
+			var tween:FlxTween;
+			playerStrums.forEach(function(spr:StrumNote) {
+				var atween:FlxTween = FlxTween.tween(spr, { alpha : 0.1 },0.2, {ease: FlxEase.circOut});
+				reefTweens.push(atween);
 			});
+			if (!ClientPrefs.middleScroll) {
+				opponentStrums.forEach(function(spr:StrumNote) {
+					var ptween:FlxTween = FlxTween.tween(spr, { alpha : 0.1 },0.2, {ease: FlxEase.circOut});
+					reefTweens.push(ptween);
+				});
+			}
+			tween = FlxTween.tween(healthBar, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
+			reefTweens.push(tween);
+			tween = FlxTween.tween(healthBarBG, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
+			reefTweens.push(tween);
+			tween = FlxTween.tween(scoreTxt, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
+			reefTweens.push(tween);
+			tween = FlxTween.tween(iconP1, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
+			reefTweens.push(tween);
+			tween = FlxTween.tween(iconP2, {alpha: 0.1}, 1, {ease: FlxEase.circOut}); 
+			reefTweens.push(tween);
+			tween = FlxTween.tween(timeBar, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
+			reefTweens.push(tween);
+			tween = FlxTween.tween(timeBarBG, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
+			reefTweens.push(tween);
+			tween = FlxTween.tween(timeTxt, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
+			reefTweens.push(tween);
 		}
-		FlxTween.tween(healthBar, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
-		FlxTween.tween(healthBarBG, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
-		FlxTween.tween(scoreTxt, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
-		FlxTween.tween(iconP1, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
-		FlxTween.tween(iconP2, {alpha: 0.1}, 1, {ease: FlxEase.circOut}); 
-		FlxTween.tween(timeBar, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
-		FlxTween.tween(timeBarBG, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
-		FlxTween.tween(timeTxt, {alpha: 0.1}, 1, {ease: FlxEase.circOut});
-		
+	
 		} else if (doingreef) {
 			addTextToDebug("more then 2 reefs at once is not allowed");
 		}
@@ -4222,6 +4222,15 @@ class PlayState extends MusicBeatState
 			camZooming = true;
 			doingreef = false;
 			var stageData:StageFile = StageData.getStageFile(curStage);
+			if (reefTweens != null) {
+				for (x in reefTweens) {
+					if (x != null) {
+						x.cancel();
+					}
+				}
+			}
+			reefTweens = null;
+
 			if(!effectsshit) {
 				FlxG.camera.zoom = stageData.defaultZoom;
 				healthBar.alpha = 1;

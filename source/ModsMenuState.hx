@@ -16,8 +16,10 @@ import flixel.tweens.FlxTween;
 import lime.utils.Assets;
 import flixel.system.FlxSound;
 import openfl.utils.Assets as OpenFlAssets;
+#if sys
 import sys.io.File;
 import sys.FileSystem;
+#end
 import haxe.Json;
 import haxe.format.JsonParser;
 import openfl.display.BitmapData;

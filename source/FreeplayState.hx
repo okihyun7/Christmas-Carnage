@@ -18,8 +18,9 @@ import lime.utils.Assets;
 import flixel.system.FlxSound;
 import openfl.utils.Assets as OpenFlAssets;
 import WeekData;
+#if sys
 import sys.FileSystem;
-
+#end
 using StringTools;
 
 class FreeplayState extends MusicBeatState
@@ -267,6 +268,9 @@ class FreeplayState extends MusicBeatState
 			if(colorTween != null) {
 				colorTween.cancel();
 			}
+			destroyFreeplayVocals();
+			if (instPlaying != -1)
+				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			MusicBeatState.switchState(new MainMenuState());
 		}

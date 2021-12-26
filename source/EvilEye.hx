@@ -65,7 +65,7 @@ class EvilEye extends Character
     }
 
     function onMouseDown(Eye:EvilEye) {
-        if (!info[2] && !info[4] && PlayState.cps < 20) {
+        if (!info[2] && !info[4] && PlayState.cps < PlayState.cpscap) {
             click(info[5] == info[1] - 1 ? true : false);
         }
             

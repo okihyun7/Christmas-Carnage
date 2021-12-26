@@ -50,7 +50,6 @@ class GameOverSubstate extends MusicBeatSubstate
 		Conductor.changeBPM(95);
 		// FlxG.camera.followLerp = 1;
 		// FlxG.camera.focusOn(FlxPoint.get(FlxG.width / 2, FlxG.height / 2));
-		FlxG.camera.scroll.set();
 		FlxG.camera.target = null;
 
 		bf.playAnim('firstDeath');
@@ -67,10 +66,9 @@ class GameOverSubstate extends MusicBeatSubstate
 		super.update(elapsed);
 
 		lePlayState.callOnLuas('onUpdate', [elapsed]);
-		if(updateCamera) {
-			var lerpVal:Float = CoolUtil.boundTo(elapsed * 0.6, 0, 1);
-			camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
-		}
+		FlxG.camera.follow(camFollowPos, LOCKON, 1);
+		updateCamera = true;
+		camFollowPos.setPosition(camFollow.x, camFollow.y);
 
 		if (controls.ACCEPT)
 		{
@@ -94,12 +92,6 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		if (bf.animation.curAnim.name == 'firstDeath')
 		{
-			if(bf.animation.curAnim.curFrame == 12)
-			{
-				FlxG.camera.follow(camFollowPos, LOCKON, 1);
-				updateCamera = true;
-			}
-
 			if (bf.animation.curAnim.finished)
 			{
 				coolStartDeath();

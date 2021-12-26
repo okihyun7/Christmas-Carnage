@@ -80,6 +80,7 @@ class CreditsState extends MusicBeatState
 			['Jah Da Man',			'sly',				'',													'https://www.youtube.com/channel/UC9epGDA3qxF-W5P1TEnC9tg',		     '6666CC'],
 			['DEAD SKULLXX',		'evanlin',			'',													'',																	 'FB71E4'],
 			['Megalo',				'megalo',			'',													'',																	 '343EC4'],
+			['Ikcz',				'ikcz',				'',													'',																	 '0099FF'],
 			[''],
 			['Psych Engine Team'],
 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',					'https://twitter.com/Shadow_Mario_',	'FFDD33'],

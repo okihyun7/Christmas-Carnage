@@ -6,6 +6,7 @@ import flixel.tweens.FlxTween;
 import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
+import flixel.util.FlxSave;
 
 using StringTools; //ur mote
 
@@ -24,9 +25,13 @@ class Achievements {
 			if (achievementsStuff[i][2] == name) {
 				switch (name) {
 					case 'naughty':
-						ClientPrefs.naughty = true;
+						PreloadingState.unlockedAchv[0] = true;
+						FlxG.save.data.naughty = true;
+        				FlxG.save.flush();
 					case 'what':
-						ClientPrefs.what = true;
+						PreloadingState.unlockedAchv[1] = true;
+						FlxG.save.data.what = true;
+        				FlxG.save.flush();
 				}
 			}
 		}
@@ -36,9 +41,9 @@ class Achievements {
 	public static function isAchievementUnlocked(name:String) {
 		switch (name) {
 			case 'naughty':
-				return ClientPrefs.naughty;
+				return PreloadingState.unlockedAchv[0];
 			case 'what':
-				return ClientPrefs.what;
+				return PreloadingState.unlockedAchv[1];
 			default:
 				return false;
 		}
@@ -55,7 +60,12 @@ class Achievements {
 	}
 
 	public static function loadAchievements():Void {
-		ClientPrefs.loadPrefs();
+		if(FlxG.save.data != null) {
+            if (FlxG.save.data.naughty != null)
+                PreloadingState.unlockedAchv[0] = FlxG.save.data.naughty;
+            if (FlxG.save.data.what != null)
+                PreloadingState.unlockedAchv[1] = FlxG.save.data.what;
+        }
 	}
 }
 

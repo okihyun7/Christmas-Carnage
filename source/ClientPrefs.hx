@@ -32,8 +32,6 @@ class ClientPrefs {
 	public static var fetus:Bool = false;
 	public static var hfcursor:Bool = true;
 	public static var preloader:Bool = true;
-	public static var naughty:Bool = false;
-	public static var what:Bool = false;
 
 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
@@ -93,8 +91,6 @@ class ClientPrefs {
 		FlxG.save.data.fetus = fetus;
 		FlxG.save.data.hfcursor = hfcursor;//preloader naughty what
 		FlxG.save.data.preloader = preloader;
-		FlxG.save.data.naughty = naughty;
-		FlxG.save.data.what = what;
 		FlxG.save.flush();
 
 		var save:FlxSave = new FlxSave();
@@ -187,14 +183,6 @@ class ClientPrefs {
 
 		if(FlxG.save.data.preloader != null) { // scrollSpeed Ringing   preloader what naughtys
 			preloader = FlxG.save.data.preloader;
-		}
-
-		if(FlxG.save.data.naughty != null) { // scrollSpeed Ringing   preloader what naughtys
-			naughty = FlxG.save.data.naughty;
-		}
-
-		if(FlxG.save.data.what != null) { // scrollSpeed Ringing   preloader what naughtys
-			what = FlxG.save.data.what;
 		}
 
 		if(FlxG.save.data.hideTime != null) {

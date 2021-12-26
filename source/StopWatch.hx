@@ -10,7 +10,6 @@ class StopWatch extends FlxBasic //used to keep track of time player spends in p
     public function new()
     {
         reset();
-
         super();
     }
 
