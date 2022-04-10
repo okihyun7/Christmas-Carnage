@@ -53,6 +53,8 @@ import FunkinLua;
 import DialogueBoxPsych;
 import Controls;
 import flixel.tweens.misc.NumTween;
+import ui.Mobilecontrols;
+import ui.FlxVirtualPad;
 
 #if sys
 import sys.FileSystem;
@@ -299,6 +301,12 @@ class PlayState extends MusicBeatState
 	//MISC
 	var ofs = 30; //controls how much the camera moves when it follows the animations
 	private static var resetSpriteCache:Bool = false;
+
+
+	#if mobileC
+	var mcontrols:Mobilecontrols; 
+	var _pad:ui.FlxVirtualPad;
+	#end
 
 	override public function create()
 	{
@@ -798,6 +806,37 @@ class PlayState extends MusicBeatState
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
+
+		#if mobileC
+			mcontrols = new Mobilecontrols();
+			switch (mcontrols.mode)
+			{
+				case VIRTUALPAD_RIGHT | VIRTUALPAD_LEFT | VIRTUALPAD_CUSTOM:
+					controls.setVirtualPad(mcontrols._virtualPad, FULL, NONE);
+				case HITBOX:
+					controls.setHitBox(mcontrols._hitbox);
+				default:
+			}
+			trackedinputs = controls.trackedinputs;
+			controls.trackedinputs = [];
+			
+
+			var camcontrol = new FlxCamera();
+			FlxG.cameras.add(camcontrol);
+			camcontrol.bgColor.alpha = 0;
+			mcontrols.cameras = [camcontrol];
+
+			mcontrols.visible = false;
+
+			_pad = new FlxVirtualPad(NONE, A);
+			_pad.alpha = 0.75;
+			_pad.visible = false;
+			_pad.cameras = [camcontrol];
+			add(_pad);
+
+			add(mcontrols);
+		#end
+
 		//Mech handler -lunar
 
 		Eyes = new FlxTypedGroup<EvilEye>();
@@ -1152,6 +1191,11 @@ class PlayState extends MusicBeatState
 
 	public function startCountdown():Void
 	{
+		#if mobileC
+		mcontrols.visible = true;
+		_pad.visible = true;
+		#end
+		
 		if(startedCountdown) {
 			callOnLuas('onStartCountdown', []);
 			return;
@@ -1403,7 +1447,7 @@ class PlayState extends MusicBeatState
 
 		var songName:String = Paths.formatToSongPath(SONG.song);
 		var file:String = Paths.json(songName + '/events');
-		#if sys
+		#if windows
 		if (FileSystem.exists(Paths.modsJson(songName + '/events')) || FileSystem.exists(file)) {
 		#else
 		if (OpenFlAssets.exists(file)) {
@@ -1776,7 +1820,8 @@ class PlayState extends MusicBeatState
 
 		if (doingreef && reefArrows != null && !cpuControlled && health > 0) {
 			for (i in 0...reefBarShit.length) {
-				if (FlxG.keys.justPressed.SPACE && reefArrows.x >= reefBarShit[i][0] && reefArrows.x <= reefBarShit[i][1]) {
+				if (_pad.buttonA.justPressed && reefArrows.x >= reefBarShit[i][0] && reefArrows.x <= reefBarShit[i][1]) {
+					trace('Pressed');
 					switch (reefBarShit[i][2]) {
 						case 'RED':
 							cameraflash(camHUD,FlxColor.fromRGB(255,0,0,255));
@@ -2027,7 +2072,7 @@ class PlayState extends MusicBeatState
 				DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconP2.getCharacter());
 				#end
 			}
-		} else if (controls.PAUSE && startedCountdown && !canPause && pauseStunTimer != null) {
+		} else if (controls.PAUSE #if android || FlxG.android.justReleased.BACK #end && startedCountdown && !canPause && pauseStunTimer != null) {
 			addTextToDebug("stop spamming");
 		}
 
@@ -3004,6 +3049,11 @@ class PlayState extends MusicBeatState
 	var transitioning = false;
 	public function endSong():Void
 	{
+		#if mobileC
+		mcontrols.visible = false;
+		_pad.visible = false;
+		#end
+
 		resetControls();
 		//Should kill you if you tried to cheat
 		if(!startingSong) {
@@ -3392,20 +3442,20 @@ class PlayState extends MusicBeatState
 
 	private function keyShit():Void
 	{
-		var up = controls.NOTE_UP;
-		var right = controls.NOTE_RIGHT;
-		var down = controls.NOTE_DOWN;
-		var left = controls.NOTE_LEFT;
+		var up = controls.NOTE_UP || controls.UI_UP;
+		var right = controls.NOTE_RIGHT || controls.UI_RIGHT;
+		var down = controls.NOTE_DOWN || controls.UI_DOWN;
+		var left = controls.NOTE_LEFT || controls.UI_LEFT;
 
-		var upP = controls.NOTE_UP_P;
-		var rightP = controls.NOTE_RIGHT_P;
-		var downP = controls.NOTE_DOWN_P;
-		var leftP = controls.NOTE_LEFT_P;
+		var upP = controls.NOTE_UP_P || controls.UI_UP_P;
+		var rightP = controls.NOTE_RIGHT_P || controls.UI_RIGHT_P;
+		var downP = controls.NOTE_DOWN_P || controls.UI_DOWN_P;
+		var leftP = controls.NOTE_LEFT_P || controls.UI_LEFT_P;
 
-		var upR = controls.NOTE_UP_R;
-		var rightR = controls.NOTE_RIGHT_R;
-		var downR = controls.NOTE_DOWN_R;
-		var leftR = controls.NOTE_LEFT_R;
+		var upR = controls.NOTE_UP_R || controls.UI_UP_R;
+		var rightR = controls.NOTE_RIGHT_R || controls.UI_RIGHT_R;
+		var downR = controls.NOTE_DOWN_R || controls.UI_DOWN_R;
+		var leftR = controls.NOTE_LEFT_R || controls.UI_LEFT_R;
 
 		var controlArray:Array<Bool> = [leftP, downP, upP,  rightP];
 		var controlReleaseArray:Array<Bool> = [leftR, downR, upR,  rightR];

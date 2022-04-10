@@ -29,7 +29,7 @@ using StringTools;
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Note Colors', 'Controls', 'Graphics', 'Visuals and UI', 'Christmas Tree'];
+	var options:Array<String> = ['Note Colors','Mobile Controls' ,'Controls', 'Graphics', 'Visuals and UI', 'Christmas Tree'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
@@ -38,6 +38,8 @@ class OptionsState extends MusicBeatState
 		switch(label) {
 			case 'Note Colors':
 				openSubState(new options.NotesSubState());
+			case 'Mobile Controls':
+				MusicBeatState.switchState(new ui.CustomControlsState());	
 			case 'Controls':
 				openSubState(new options.ControlsSubState());
 			case 'Graphics':
@@ -72,6 +74,10 @@ class OptionsState extends MusicBeatState
 			grpOptions.add(optionText);
 		}
 		changeSelection();
+
+		#if mobileC
+		addVirtualPad(UP_DOWN, A_B);
+		#end
 
 		super.create();
 	}

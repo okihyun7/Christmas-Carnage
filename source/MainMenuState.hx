@@ -114,6 +114,11 @@ class MainMenuState extends MusicBeatState
 		}
 		#end
 		*/
+
+		#if mobileC
+		addVirtualPad(LEFT_RIGHT, A_B);
+		#end
+
 		super.create();
 	}
 
@@ -184,7 +189,7 @@ class MainMenuState extends MusicBeatState
 						
 										var songLowercase:String = Paths.formatToSongPath(songname);
 										var poop:String = Highscore.formatSong(songLowercase, diff);
-										#if MODS_ALLOWED
+										#if windows
 										if(!sys.FileSystem.exists(Paths.modsJson(songLowercase + '/' + poop)) && !sys.FileSystem.exists(Paths.json(songLowercase + '/' + poop))) {
 										#else
 										if(!OpenFlAssets.exists(Paths.json(songLowercase + '/' + poop))) {
@@ -206,8 +211,8 @@ class MainMenuState extends MusicBeatState
 										FlxG.sound.music.volume = 0;
 									case 'freeplay':
 										MusicBeatState.switchState(new FreeplayState());
-									case 'mods':
-										MusicBeatState.switchState(new ModsMenuState());
+									// case 'mods':
+									// 	MusicBeatState.switchState(new ModsMenuState());
 									case 'awards':
 										MusicBeatState.switchState(new AchievementsMenuState());
 									case 'credits':

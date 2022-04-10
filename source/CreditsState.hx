@@ -45,7 +45,7 @@ class CreditsState extends MusicBeatState
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
-		#if MODS_ALLOWED
+		#if windows
 		trace("finding mod shit");
 		if (FileSystem.exists(Paths.mods())) {
 			trace("mods folder");
@@ -138,6 +138,11 @@ class CreditsState extends MusicBeatState
 		bg.color = getCurrentBGColor();
 		intendedColor = bg.color;
 		changeSelection();
+		
+		#if mobileC
+		addVirtualPad(UP_DOWN, A_B);
+		#end
+
 		super.create();
 	}
 
